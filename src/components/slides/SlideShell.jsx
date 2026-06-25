@@ -36,6 +36,7 @@ export default function SlideShell({
   children,
   overlay = 'dark',
   fx = null,
+  desktopFit = false,
 }) {
   const overlays = {
     dark: 'bg-gradient-to-b from-medical-950/94 via-medical-900/88 to-medical-950/96',
@@ -58,7 +59,9 @@ export default function SlideShell({
       />
       <div className={`absolute inset-0 ${overlays[overlay] || overlays.dark}`} />
       <SlideFxGate FxComponent={FxComponent} />
-      <div className="slide-scroll relative z-10 flex h-full min-h-0 w-full flex-col overflow-x-hidden overflow-y-auto overscroll-y-contain px-4 md:px-8 lg:px-10">
+      <div
+        className={`slide-scroll relative z-10 flex h-full min-h-0 w-full flex-col overflow-x-hidden overflow-y-auto overscroll-y-contain px-4 md:px-8 lg:px-10 ${desktopFit ? 'slide-scroll-fit' : ''}`}
+      >
         {children}
       </div>
     </div>

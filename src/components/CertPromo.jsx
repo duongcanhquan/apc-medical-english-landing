@@ -70,12 +70,40 @@ export function CertPromoStrip({ programs, className = '' }) {
   );
 }
 
-export function CourseCertHero({ title, cert, subtitle, markets, color = 'teal' }) {
+export function CourseCertHero({ title, cert, subtitle, markets, color = 'teal', compact = false, className = '' }) {
   const c = COLOR[color] || COLOR.teal;
+
+  if (compact) {
+    return (
+      <div
+        className={`cert-hero-callout flex items-center gap-3 rounded-xl border p-3 ${c.border} ${c.glow} ${className}`}
+      >
+        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 ring-1 ${c.ring}`}>
+          {color === 'sky' ? (
+            <Globe className={`h-4 w-4 ${c.text}`} aria-hidden="true" />
+          ) : color === 'violet' ? (
+            <Award className={`h-4 w-4 ${c.text}`} aria-hidden="true" />
+          ) : (
+            <GraduationCap className={`h-4 w-4 ${c.text}`} aria-hidden="true" />
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className={`hook-label text-[9px] ${c.text}`}>{title}</p>
+          <p className="font-serif text-lg font-extrabold leading-tight text-white md:text-xl">{cert}</p>
+          {subtitle && <p className="text-body truncate text-[11px] md:text-xs">{subtitle}</p>}
+        </div>
+        {markets && (
+          <p className={`hidden shrink-0 text-right text-[10px] font-semibold lg:block ${c.text}`}>
+            {markets}
+          </p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div
-      className={`cert-hero-callout mb-5 flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between md:p-5 ${c.border} ${c.glow}`}
+      className={`cert-hero-callout mb-5 flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between md:p-5 ${c.border} ${c.glow} ${className}`}
     >
       <div className="flex items-start gap-3">
         <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/10 ring-1 ${c.ring}`}>

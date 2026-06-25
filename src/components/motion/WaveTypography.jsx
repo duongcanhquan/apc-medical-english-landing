@@ -8,13 +8,17 @@ const KEYWORD = {
   gold: 'keyword-gold',
 };
 
-export function WaveHeadline({ children, className = '', accent = 'teal' }) {
+export function WaveHeadline({ children, className = '', accent = 'teal', size = 'default' }) {
   const { run } = useFxMotion();
   const stroke = accent === 'sky' ? '#38bdf8' : accent === 'violet' ? '#a78bfa' : '#2dd4bf';
+  const sizeClass =
+    size === 'compact'
+      ? 'text-xl sm:text-2xl md:text-3xl'
+      : 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl';
 
   return (
     <div className={`relative inline-block ${className}`}>
-      <h2 className="headline-display text-balance text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+      <h2 className={`headline-display text-balance ${sizeClass}`}>
         {children}
       </h2>
       <svg
@@ -44,8 +48,9 @@ export function HighlightWord({ children, color = 'teal' }) {
   );
 }
 
-export function FloatingDetailItem({ label, highlight, desc, index, color = 'teal' }) {
+export function FloatingDetailItem({ label, highlight, desc, index, color = 'teal', layout = 'wave' }) {
   const reduceMotion = useReducedMotion();
+  const isGrid = layout === 'grid';
   const ringColor =
     color === 'sky'
       ? 'border-sky-400/50'
@@ -53,28 +58,38 @@ export function FloatingDetailItem({ label, highlight, desc, index, color = 'tea
         ? 'border-violet-400/50'
         : 'border-teal-glow/50';
 
-  const offset = index % 2 === 0 ? 'md:ml-0 md:mr-auto' : 'md:ml-auto md:mr-0';
-  const rotate = index % 2 === 0 ? -0.6 : 0.6;
+  const offset = isGrid ? '' : index % 2 === 0 ? 'md:ml-0 md:mr-auto' : 'md:ml-auto md:mr-0';
+  const align = isGrid ? '' : index % 2 === 0 ? 'md:self-start' : 'md:self-end md:text-right';
+  const rotate = isGrid || reduceMotion ? 0 : index % 2 === 0 ? -0.6 : 0.6;
+  const borderSides = isGrid
+    ? `border-l-4 ${ringColor}`
+    : `${ringColor} ${index % 2 === 1 ? 'md:border-l-0 md:border-r-4 md:pr-5 md:pl-0' : 'border-l-4'}`;
 
   return (
     <motion.div
-      className={`hover-lift relative w-full max-w-xl md:max-w-xl ${offset} ${index % 2 === 0 ? 'md:self-start' : 'md:self-end md:text-right'}`}
-      initial={{ opacity: 0, y: 24, rotate: 0 }}
-      animate={{ opacity: 1, y: 0, rotate: reduceMotion ? 0 : rotate }}
+      className={`hover-lift relative w-full ${isGrid ? '' : 'max-w-xl'} ${offset} ${align}`}
+      initial={{ opacity: 0, y: isGrid ? 16 : 24, rotate: 0 }}
+      animate={{ opacity: 1, y: 0, rotate }}
       transition={{ duration: 0.55, delay: index * 0.07 }}
     >
       <div
-        className={`glass-panel relative rounded-xl border-l-4 py-3 pl-4 md:py-4 md:pl-5 ${ringColor} ${index % 2 === 1 ? 'md:border-l-0 md:border-r-4 md:pr-5 md:pl-0' : ''}`}
+        className={`glass-panel relative rounded-xl py-2.5 pl-3 pr-3 md:py-3 md:pl-4 ${borderSides} ${isGrid ? '' : 'md:py-4 md:pl-5'}`}
       >
-        <p className={`hook-label mb-1.5 text-[10px] md:text-xs ${color === 'sky' ? 'hook-label-sky' : color === 'violet' ? 'hook-label-violet' : 'hook-label-teal'}`}>
+        <p
+          className={`hook-label mb-1 text-[9px] md:text-[10px] ${color === 'sky' ? 'hook-label-sky' : color === 'violet' ? 'hook-label-violet' : 'hook-label-teal'}`}
+        >
           {label}
         </p>
         {highlight && (
-          <p className="mb-1.5 text-base font-extrabold sm:text-lg md:text-2xl">
+          <p
+            className={`mb-1 font-extrabold ${isGrid ? 'text-sm md:text-base' : 'mb-1.5 text-base sm:text-lg md:text-2xl'}`}
+          >
             <HighlightWord color={color}>{highlight}</HighlightWord>
           </p>
         )}
-        <p className="text-body text-sm leading-relaxed md:text-base">{desc}</p>
+        <p className={`text-body leading-snug ${isGrid ? 'text-[11px] md:text-xs' : 'text-sm md:text-base leading-relaxed'}`}>
+          {desc}
+        </p>
       </div>
     </motion.div>
   );
