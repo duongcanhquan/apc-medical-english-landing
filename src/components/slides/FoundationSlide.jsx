@@ -1,8 +1,6 @@
 import { Star } from 'lucide-react';
+import { slideImages } from '../../lib/slideImages';
 import CourseDetailLayout from './CourseDetailLayout';
-
-const BG =
-  'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1920&q=80';
 
 const items = [
   {
@@ -21,13 +19,13 @@ const items = [
     desc: 'Mô phỏng phòng khám thực tế — 70% thực hành, 30% lý thuyết ứng dụng.',
   },
   {
-    label: 'Mục tiêu đầu ra',
+    label: 'Chứng chỉ đầu ra',
     highlight: 'B2 CEFR',
-    desc: 'Tự tin giao tiếp y lệnh cơ bản, sẵn sàng học sâu hơn.',
+    desc: 'Chứng nhận năng lực B2 theo khung CEFR — nền tảng bắt buộc trước OET.',
   },
   {
     label: 'Đối tượng',
-    highlight: 'Toàn đội ngũ y tế',
+    highlight: 'Đội ngũ y tế Việt Nam',
     desc: 'Bác sĩ, điều dưỡng, kỹ thuật viên — xóa rào cản giao tiếp hàng ngày.',
   },
 ];
@@ -35,8 +33,8 @@ const items = [
 export default function FoundationSlide() {
   return (
     <CourseDetailLayout
-      bg={BG}
-      alt="Foundation Medical English"
+      bg={slideImages.foundation.src}
+      alt={slideImages.foundation.alt}
       overlay="aurora"
       fx="dna-helix"
       badge="Gói Phổ Biến Nhất"
@@ -44,6 +42,11 @@ export default function FoundationSlide() {
       badgeColor="teal"
       tagline="Foundation · Bước 1"
       title="Foundation Medical English"
+      certHero={{
+        title: 'Chứng chỉ đầu ra',
+        cert: 'B2 CEFR',
+        subtitle: 'Medical English · 60 giờ · Simulation lâm sàng',
+      }}
       items={items}
     />
   );

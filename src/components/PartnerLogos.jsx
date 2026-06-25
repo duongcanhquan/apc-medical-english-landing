@@ -14,10 +14,10 @@ const SIZES = {
     gap: 'gap-4 md:gap-6',
   },
   lg: {
-    vietmy: 'h-28 max-w-[400px] md:h-32 md:max-w-[440px]',
-    equest: 'h-20 max-w-[320px] md:h-24 md:max-w-[360px]',
-    divider: 'text-2xl md:text-4xl',
-    gap: 'gap-4 md:gap-6',
+    vietmy: 'h-14 max-w-[220px] sm:h-16 sm:max-w-[260px] md:h-24 md:max-w-[360px] lg:h-32 lg:max-w-[440px]',
+    equest: 'h-10 max-w-[160px] sm:h-12 sm:max-w-[200px] md:h-20 md:max-w-[300px] lg:h-24 lg:max-w-[360px]',
+    divider: 'text-xl md:text-3xl lg:text-4xl',
+    gap: 'gap-2 sm:gap-3 md:gap-5 lg:gap-6',
   },
 };
 

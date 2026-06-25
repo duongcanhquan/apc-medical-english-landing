@@ -7,7 +7,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import PartnerLogos from '../PartnerLogos';
-import { useIsMobile } from '../../hooks/useMediaQuery';
+import { useFxMotion } from '../../hooks/useSlideActive';
 
 const CENTER = { x: 50, y: 50 };
 
@@ -65,8 +65,7 @@ function PulseDot({ path, color, delay = 0, duration = 2.8 }) {
 
 export default function SynapseMindMap() {
   const containerRef = useRef(null);
-  const reduceMotion = useReducedMotion();
-  const isMobile = useIsMobile();
+  const { run, runHeavy, reduceMotion, isMobile } = useFxMotion();
   const [mouse, setMouse] = useState(CENTER);
   const [hovered, setHovered] = useState(null);
   const [activeNode, setActiveNode] = useState(null);
@@ -94,12 +93,12 @@ export default function SynapseMindMap() {
   );
 
   const onPointerMove = (e) => {
-    if (reduceMotion || isMobile) return;
+    if (!runHeavy) return;
     updateMouse(e.clientX, e.clientY);
   };
 
   const onPointerLeave = () => {
-    if (reduceMotion || isMobile) return;
+    if (!runHeavy) return;
     setMouse(CENTER);
     rawX.set(CENTER.x);
     rawY.set(CENTER.y);
@@ -108,15 +107,36 @@ export default function SynapseMindMap() {
   const bend = reduceMotion ? 0.3 : 1;
   const paths = NODES.map((n) => curvePath(n.x, n.y, mouse.x, mouse.y, bend));
 
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-center py-1">
+          <PartnerLogos size="sm" />
+        </div>
+        {NODES.map((node) => (
+          <article
+            key={node.id}
+            className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 backdrop-blur-md"
+          >
+            <h3 className="font-serif mb-1.5 text-base font-bold" style={{ color: node.color }}>
+              {node.title}
+            </h3>
+            <p className="text-sm leading-relaxed text-slate-300">{node.text}</p>
+          </article>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}
-      className="relative mx-auto h-[min(62vh,540px)] w-full touch-none select-none"
+      className="relative mx-auto h-[min(50vh,460px)] w-full touch-none select-none md:h-[min(56vh,520px)]"
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
     >
       {/* Ambient mouse glow */}
-      {!reduceMotion && !isMobile && (
+      {runHeavy && (
         <motion.div
           className="pointer-events-none absolute h-40 w-40 rounded-full bg-teal-glow/10 blur-3xl"
           style={{
@@ -194,68 +214,60 @@ export default function SynapseMindMap() {
                 animate={{ opacity: lit ? 1 : 0.65 }}
                 transition={{ duration: 0.25 }}
               />
-              {/* Flow pulse */}
-              {!reduceMotion && (
-                <>
-                  <PulseDot path={path} color={node.color} delay={i * 0.9} duration={2.6 + i * 0.3} />
-                  <PulseDot path={path} color="#fff" delay={i * 0.9 + 1.3} duration={2.6 + i * 0.3} />
-                </>
+              {/* Flow pulse — one dot per connection when active */}
+              {runHeavy && (
+                <PulseDot path={path} color={node.color} delay={i * 0.9} duration={2.6 + i * 0.3} />
               )}
               {/* Node anchor dot on SVG */}
-              <motion.circle
+              <circle
                 cx={node.x}
                 cy={node.y}
                 r={lit ? 2.2 : 1.4}
                 fill={node.color}
                 filter="url(#synapseGlow)"
-                animate={reduceMotion ? {} : { opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
+                className={run ? 'synapse-node-pulse' : ''}
+                style={{ animationDelay: `${i * 0.4}s` }}
               />
             </g>
           );
         })}
 
         {/* Center hub pulse */}
-        <motion.circle
+        <circle
           cx={CENTER.x}
           cy={CENTER.y}
           r="3"
           fill="rgba(45,212,191,0.5)"
-          animate={reduceMotion ? {} : { r: [2.5, 3.5, 2.5], opacity: [0.4, 0.8, 0.4] }}
-          transition={{ duration: 2.2, repeat: Infinity }}
+          className={run ? 'synapse-hub-pulse' : ''}
         />
       </svg>
 
       {/* Center hub — follows mouse */}
       <motion.div
         className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
-        style={reduceMotion || isMobile ? {} : { x: hubX, y: hubY }}
+        style={runHeavy ? { x: hubX, y: hubY } : {}}
       >
-        <motion.div
-          className="glass-strong rounded-2xl px-5 py-4 ring-1 ring-teal-glow/30 md:px-8 md:py-5"
-          animate={reduceMotion ? {} : { scale: [1, 1.03, 1] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        <div
+          className={`glass-strong rounded-2xl px-5 py-4 ring-1 ring-teal-glow/30 md:px-8 md:py-5 ${run ? 'synapse-hub-breathe' : ''}`}
         >
           <PartnerLogos size="sm" />
-        </motion.div>
+        </div>
       </motion.div>
 
       {/* Node cards */}
       {NODES.map((node, i) => {
         const lit = hovered === node.id || activeNode === node.id;
-        const parallaxX = reduceMotion || isMobile ? 0 : (mouse.x - 50) * (i === 1 ? -0.06 : 0.06);
-        const parallaxY = reduceMotion || isMobile ? 0 : (mouse.y - 50) * 0.04;
+        const parallaxX = runHeavy ? (mouse.x - 50) * (i === 1 ? -0.06 : 0.06) : 0;
+        const parallaxY = runHeavy ? (mouse.y - 50) * 0.04 : 0;
 
         return (
           <motion.article
             key={node.id}
-            className={`absolute ${node.pos} z-10 w-[88%] max-w-[280px] cursor-default md:w-60`}
+            className={`hover-lift absolute ${node.pos} z-10 w-[88%] max-w-[280px] cursor-default md:w-60`}
             style={{ x: parallaxX, y: parallaxY }}
             onHoverStart={() => !isMobile && setHovered(node.id)}
             onHoverEnd={() => !isMobile && setHovered(null)}
             onClick={() => isMobile && setActiveNode((prev) => (prev === node.id ? null : node.id))}
-            whileHover={reduceMotion ? {} : { scale: 1.04, y: -4 }}
-            transition={{ type: 'spring', stiffness: 380, damping: 22 }}
           >
             <div
               className={`relative overflow-hidden rounded-3xl border p-4 backdrop-blur-md transition-all duration-300 md:p-5 ${

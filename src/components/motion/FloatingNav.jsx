@@ -14,42 +14,18 @@ const NAV_ITEMS = [
 ];
 
 function MacTooltip({ label, visible }) {
-  const reduceMotion = useReducedMotion();
-
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
           className="pointer-events-none absolute right-9 bottom-full mb-2 flex flex-col items-end"
-          initial={{ opacity: 0, y: 8, scale: 0.92, filter: 'blur(6px)' }}
-          animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, y: 6, scale: 0.95, filter: 'blur(4px)' }}
-          transition={{ type: 'spring', stiffness: 420, damping: 28 }}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 4 }}
+          transition={{ duration: 0.15 }}
         >
           <div className="dock-tooltip rounded-xl px-3.5 py-2 text-right shadow-xl">
-            <motion.p
-              className="text-sm font-semibold tracking-tight text-white"
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: {},
-                visible: { transition: { staggerChildren: reduceMotion ? 0 : 0.018 } },
-              }}
-            >
-              {label.split('').map((char, i) => (
-                <motion.span
-                  key={`${label}-${i}`}
-                  className="inline-block"
-                  variants={{
-                    hidden: { opacity: 0, y: 6 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {char === ' ' ? '\u00A0' : char}
-                </motion.span>
-              ))}
-            </motion.p>
+            <p className="text-sm font-semibold tracking-tight text-white">{label}</p>
           </div>
           <div className="mr-3 h-2 w-2 rotate-45 bg-white/10 backdrop-blur-xl" />
         </motion.div>
@@ -63,6 +39,7 @@ export default function FloatingNav({ activeIndex, onNavigate }) {
   const reduceMotion = useReducedMotion();
 
   const getScale = (index) => {
+    if (reduceMotion) return activeIndex === index ? 1.15 : 1;
     if (hovered === null) return activeIndex === index ? 1.2 : 1;
     const dist = Math.abs(hovered - index);
     if (dist === 0) return 1.55;
@@ -80,7 +57,7 @@ export default function FloatingNav({ activeIndex, onNavigate }) {
       {NAV_ITEMS.map((item, index) => {
         const isActive = activeIndex === index;
         const isHovered = hovered === index;
-        const scale = reduceMotion ? (isActive ? 1.15 : 1) : getScale(index);
+        const scale = getScale(index);
 
         return (
           <button
@@ -93,15 +70,13 @@ export default function FloatingNav({ activeIndex, onNavigate }) {
             aria-current={isActive ? 'true' : undefined}
           >
             <MacTooltip label={item.label} visible={isHovered} />
-            <motion.span
-              className={`relative block rounded-full border transition-colors ${
+            <span
+              className={`nav-dot relative block rounded-full border transition-transform duration-200 ease-out ${
                 isActive
-                  ? 'border-teal-glow bg-teal-glow shadow-[0_0_14px_rgba(45,212,191,0.7)]'
+                  ? 'border-teal-glow bg-teal-glow nav-dot-active'
                   : 'border-teal-accent/40 bg-white/15 group-hover:border-teal-glow/60 group-hover:bg-teal-accent/30'
               }`}
-              animate={{ width: 10 * scale, height: 10 * scale }}
-              transition={{ type: 'spring', stiffness: 400, damping: 22 }}
-              style={{ width: 10, height: 10 }}
+              style={{ width: 10 * scale, height: 10 * scale }}
             />
           </button>
         );
@@ -117,16 +92,8 @@ export function AmbientLayer() {
       <div className="absolute inset-0 bg-gradient-to-b from-medical-950 via-medical-900 to-medical-950" />
       {!reduceMotion && (
         <>
-          <motion.div
-            className="absolute -top-1/4 left-0 h-[40vh] w-[40vw] rounded-full bg-cyan-700/10 blur-[100px] md:h-[55vh] md:w-[55vw] md:blur-[120px]"
-            animate={{ x: [0, 30, 0], y: [0, 20, 0] }}
-            transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute right-0 bottom-0 h-[35vh] w-[35vw] rounded-full bg-teal-600/8 blur-[80px] md:h-[45vh] md:w-[45vw] md:blur-[100px]"
-            animate={{ x: [0, -20, 0] }}
-            transition={{ duration: 32, repeat: Infinity, ease: 'easeInOut' }}
-          />
+          <div className="ambient-drift ambient-drift-a absolute -top-1/4 left-0 h-[40vh] w-[40vw] rounded-full bg-cyan-700/10 blur-[100px] md:h-[55vh] md:w-[55vw] md:blur-[120px]" />
+          <div className="ambient-drift ambient-drift-b absolute right-0 bottom-0 h-[35vh] w-[35vw] rounded-full bg-teal-600/8 blur-[80px] md:h-[45vh] md:w-[45vw] md:blur-[100px]" />
         </>
       )}
     </div>

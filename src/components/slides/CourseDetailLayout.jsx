@@ -1,5 +1,7 @@
 import { SlideEntrance, SnapAnimationProvider, StaggerChild, StaggerGroup } from '../motion/SlideEntrance';
+import { CourseCertHero } from '../CertPromo';
 import { FloatingDetailItem, WaveBadge, WaveHeadline } from '../motion/WaveTypography';
+import SlideContent from './SlideContent';
 import SlideShell from './SlideShell';
 
 export default function CourseDetailLayout({
@@ -13,12 +15,18 @@ export default function CourseDetailLayout({
   tagline,
   title,
   headlineAccent = 'teal',
+  certHero,
   items,
 }) {
   return (
     <SnapAnimationProvider>
       <SlideShell image={bg} alt={alt} overlay={overlay} fx={fx}>
-        <div className="m-auto flex min-h-full w-full max-w-4xl flex-col justify-center gap-6 py-4 md:gap-8">
+        <SlideContent maxWidth="max-w-4xl">
+          {certHero && (
+            <SlideEntrance>
+              <CourseCertHero {...certHero} color={badgeColor} />
+            </SlideEntrance>
+          )}
           <SlideEntrance className="text-center md:text-left">
             <div className="mb-4 flex flex-col items-center gap-3 md:items-start">
               <WaveBadge color={badgeColor}>
@@ -26,7 +34,7 @@ export default function CourseDetailLayout({
                 {badge}
               </WaveBadge>
               {tagline && (
-                <p className="font-mono text-[10px] tracking-[0.25em] text-slate-400 uppercase md:text-xs">
+                <p className="hook-label hook-label-teal text-[10px] md:text-xs">
                   {tagline}
                 </p>
               )}
@@ -49,7 +57,7 @@ export default function CourseDetailLayout({
               </StaggerChild>
             ))}
           </StaggerGroup>
-        </div>
+        </SlideContent>
       </SlideShell>
     </SnapAnimationProvider>
   );

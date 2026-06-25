@@ -163,18 +163,14 @@ export function BrainWavesBackground() {
           fill="rgba(56,189,248,0.06)" stroke="rgba(56,189,248,0.2)" strokeWidth="1"
         />
         {[20, 40, 60, 80].map((y, i) => (
-          <motion.path
+          <path
             key={i}
-            d={`M 30 ${y} Q 70 ${y - 8} 100 ${y} Q 130 ${y + 8} 170 ${y}`}
+            d={`M 30 ${y} Q 70 ${y - 6} 100 ${y} Q 130 ${y + 6} 170 ${y}`}
             fill="none"
             stroke="rgba(147,197,253,0.35)"
             strokeWidth="1"
-            animate={reduceMotion ? {} : { d: [
-              `M 30 ${y} Q 70 ${y - 6} 100 ${y} Q 130 ${y + 6} 170 ${y}`,
-              `M 30 ${y} Q 70 ${y + 6} 100 ${y} Q 130 ${y - 6} 170 ${y}`,
-              `M 30 ${y} Q 70 ${y - 6} 100 ${y} Q 130 ${y + 6} 170 ${y}`,
-            ]}}
-            transition={{ duration: 2 + i * 0.4, repeat: Infinity, ease: 'easeInOut' }}
+            className="brain-wave-line"
+            style={{ animationDelay: `${i * 0.4}s` }}
           />
         ))}
       </svg>

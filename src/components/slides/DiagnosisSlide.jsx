@@ -1,8 +1,7 @@
 import { SlideEntrance, SnapAnimationProvider, StaggerChild, StaggerGroup, Typewriter } from '../motion/SlideEntrance';
+import { slideImages } from '../../lib/slideImages';
+import SlideContent from './SlideContent';
 import SlideShell from './SlideShell';
-
-const BG =
-  'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1920&q=80';
 
 const stats = [
   {
@@ -25,14 +24,14 @@ const stats = [
 export default function DiagnosisSlide() {
   return (
     <SnapAnimationProvider>
-      <SlideShell image={BG} alt="Báo cáo chẩn đoán y khoa" overlay="dark" fx="ecg-pulse">
-        <div className="m-auto flex min-h-full max-w-6xl flex-col justify-center">
+      <SlideShell image={slideImages.diagnosis.src} alt={slideImages.diagnosis.alt} overlay="dark" fx="ecg-pulse">
+        <SlideContent maxWidth="max-w-6xl">
           <SlideEntrance>
             <div className="glass-strong relative mb-8 overflow-hidden rounded-3xl p-6 md:p-8 mri-sweep">
-              <p className="mb-2 font-mono text-xs tracking-widest text-teal-glow uppercase">
+              <p className="hook-label hook-label-teal mb-2 text-xs">
                 Báo cáo chẩn đoán · APC Diagnostic
               </p>
-              <h2 className="font-serif text-balance text-2xl font-bold text-white md:text-4xl">
+              <h2 className="headline-display text-balance text-2xl md:text-4xl">
                 Nút Thắt Ngôn Ngữ: Khoảng Trống Giữa Năng Lực Và Cơ Hội
               </h2>
             </div>
@@ -45,8 +44,8 @@ export default function DiagnosisSlide() {
                   <p className="stat-glow mb-2 font-serif text-4xl font-bold text-teal-glow md:text-5xl">
                     {s.num}
                   </p>
-                  <h3 className="mb-2 text-sm font-bold text-white md:text-base">{s.title}</h3>
-                  <p className="text-xs leading-relaxed text-slate-400 md:text-sm">{s.desc}</p>
+                  <h3 className="mb-2 text-sm font-extrabold text-white md:text-base">{s.title}</h3>
+                  <p className="text-muted text-xs leading-relaxed md:text-sm">{s.desc}</p>
                 </article>
               </StaggerChild>
             ))}
@@ -54,11 +53,11 @@ export default function DiagnosisSlide() {
 
           <SlideEntrance delay={0.4} className="mt-8">
             <Typewriter
-              className="text-balance text-center text-sm text-slate-300 md:text-base"
+              className="text-body text-balance text-center text-sm md:text-base"
               text="Đã đến lúc giải quyết triệt để rào cản này bằng phương pháp thực chiến."
             />
           </SlideEntrance>
-        </div>
+        </SlideContent>
       </SlideShell>
     </SnapAnimationProvider>
   );

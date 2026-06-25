@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { useIsMobile } from '../../hooks/useMediaQuery';
+import { useFxMotion } from '../../hooks/useSlideActive';
 
 const STEPS = [
   {
@@ -79,7 +79,7 @@ function LightPulse({ path, color, delay = 0, dur = 6 }) {
   );
 }
 
-function RoadSvg({ roadPath, reduceMotion, isMobile }) {
+function RoadSvg({ roadPath, reduceMotion, isMobile, run }) {
   const vb = isMobile ? '0 0 320 500' : '0 0 1000 360';
 
   return (
@@ -136,13 +136,9 @@ function RoadSvg({ roadPath, reduceMotion, isMobile }) {
         transition={{ duration: 1.8, ease: 'easeInOut' }}
       />
 
-      {/* Traveling light beams */}
-      {!reduceMotion && (
-        <>
-          <LightPulse path={roadPath} color="#2dd4bf" delay={0} dur={7} />
-          <LightPulse path={roadPath} color="#38bdf8" delay={2.3} dur={7} />
-          <LightPulse path={roadPath} color="#fbbf24" delay={4.6} dur={7} />
-        </>
+      {/* Traveling light — single pulse when slide active */}
+      {run && (
+        <LightPulse path={roadPath} color="#38bdf8" delay={0} dur={8} />
       )}
 
       {/* Milestone dots on road */}
@@ -159,13 +155,13 @@ function RoadSvg({ roadPath, reduceMotion, isMobile }) {
             animate={{ scale: 1 }}
             transition={{ delay: 0.4 + i * 0.15, type: 'spring' }}
           />
-          <motion.circle
+          <circle
             cx={stop.x}
             cy={stop.y}
             r={isMobile ? 4 : 5}
             fill={STEPS[i].color}
-            animate={reduceMotion ? {} : { opacity: [0.5, 1, 0.5], r: [4, 6, 4] }}
-            transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
+            className={run && !reduceMotion ? 'journey-dot-pulse' : ''}
+            style={{ animationDelay: `${i * 0.5}s` }}
           />
           <text
             x={stop.x}
@@ -206,16 +202,15 @@ function StageCard({ step, index, isMobile, stop, reduceMotion }) {
 
   const isAbove = stop.cardPos === 'above';
   const leftPct = (stop.x / 1000) * 100;
-  const topPct = isAbove ? (stop.y / 360) * 100 - 28 : (stop.y / 360) * 100 + 4;
+  const topPct = isAbove ? (stop.y / 360) * 100 - 32 : (stop.y / 360) * 100 + 6;
 
   return (
     <motion.article
-      className="absolute w-[22%] min-w-[140px] max-w-[200px]"
+      className="hover-lift absolute w-[24%] min-w-[150px] max-w-[210px] lg:max-w-[220px]"
       style={{ left: `${leftPct}%`, top: `${topPct}%`, x: '-50%' }}
       initial={{ opacity: 0, y: isAbove ? -16 : 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5 + index * 0.12, type: 'spring' }}
-      whileHover={reduceMotion ? {} : { scale: 1.04, y: isAbove ? -4 : 4 }}
     >
       <div
         className={`mx-auto w-px ${isAbove ? 'mb-2 h-6' : 'mt-2 h-6'}`}
@@ -246,28 +241,58 @@ function StageContent({ step, index, compact = false }) {
         {step.text}
       </p>
       {!compact && (
-        <motion.div
-          className="mt-2 h-0.5 rounded-full"
+        <div
+          className="mt-2 h-0.5 rounded-full opacity-60"
           style={{ background: `linear-gradient(90deg, transparent, ${step.color}, transparent)` }}
-          animate={{ opacity: [0.3, 0.9, 0.3], scaleX: [0.5, 1, 0.5] }}
-          transition={{ duration: 2.5, repeat: Infinity, delay: index * 0.4 }}
         />
       )}
     </>
   );
 }
 
+function MobileTimeline({ steps }) {
+  return (
+    <div className="flex flex-col">
+      {steps.map((step, i) => (
+        <div key={step.title} className="flex gap-3">
+          <div className="flex w-8 shrink-0 flex-col items-center">
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-bold"
+              style={{ borderColor: step.color, color: step.color }}
+            >
+              {String(i + 1).padStart(2, '0')}
+            </div>
+            {i < steps.length - 1 && (
+              <div
+                className="my-1 w-0.5 flex-1 min-h-[2rem] rounded-full"
+                style={{ background: `linear-gradient(to bottom, ${step.color}88, ${steps[i + 1].color}44)` }}
+              />
+            )}
+          </div>
+          <article className={`flex-1 ${i < steps.length - 1 ? 'pb-5' : 'pb-1'}`}>
+            <div className={`rounded-2xl border bg-white/[0.07] p-4 backdrop-blur-md ${step.ring}`}>
+              <StageContent step={step} index={i} compact />
+            </div>
+          </article>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function PartnershipJourney() {
   const reduceMotion = useReducedMotion();
-  const isMobile = useIsMobile();
+  const { run, isMobile } = useFxMotion();
   const roadPath = isMobile ? MOBILE_ROAD : DESKTOP_ROAD;
   const stops = isMobile ? MOBILE_STOPS : DESKTOP_STOPS;
 
+  if (isMobile) {
+    return <MobileTimeline steps={STEPS} />;
+  }
+
   return (
-    <div
-      className={`relative mx-auto w-full ${isMobile ? 'h-[min(68vh,520px)]' : 'h-[min(52vh,420px)] md:h-[min(58vh,480px)]'}`}
-    >
-      <RoadSvg roadPath={roadPath} reduceMotion={reduceMotion} isMobile={isMobile} />
+    <div className="relative mx-auto w-full min-h-[480px] h-[min(520px,52vh)] lg:min-h-[500px] lg:h-[min(540px,55vh)]">
+      <RoadSvg roadPath={roadPath} reduceMotion={reduceMotion} isMobile={isMobile} run={run} />
 
       {STEPS.map((step, i) => (
         <StageCard

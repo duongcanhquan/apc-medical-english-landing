@@ -1,24 +1,23 @@
 import { Activity } from 'lucide-react';
 import PartnershipJourney from '../motion/PartnershipJourney';
 import PartnerLogos from '../PartnerLogos';
+import { slideImages } from '../../lib/slideImages';
 import { SlideEntrance, SnapAnimationProvider } from '../motion/SlideEntrance';
+import SlideContent from './SlideContent';
 import SlideShell from './SlideShell';
-
-const BG =
-  'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1920&q=80';
 
 export default function RoadmapSlide() {
   return (
     <SnapAnimationProvider>
-      <SlideShell image={BG} alt="Lộ trình hợp tác" overlay="aurora">
-        <div className="m-auto flex min-h-full w-full max-w-7xl flex-col justify-center py-2">
+      <SlideShell image={slideImages.roadmap.src} alt={slideImages.roadmap.alt} overlay="aurora">
+        <SlideContent maxWidth="max-w-7xl">
           <SlideEntrance>
-            <div className="mb-4 flex flex-col items-center md:mb-6">
+            <div className="mb-2 flex flex-col items-center md:mb-4">
               <PartnerLogos size="md" label="Đối tác triển khai" animated />
             </div>
           </SlideEntrance>
 
-          <SlideEntrance delay={0.08} className="mb-4 text-center md:mb-6">
+          <SlideEntrance delay={0.08} className="text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-teal-glow/30 bg-teal-accent/10 px-4 py-1.5 text-xs font-bold text-teal-glow">
               <Activity className="h-3.5 w-3.5" /> Clinical Partnership Pathway
             </div>
@@ -33,7 +32,7 @@ export default function RoadmapSlide() {
           <SlideEntrance delay={0.18}>
             <PartnershipJourney />
           </SlideEntrance>
-        </div>
+        </SlideContent>
       </SlideShell>
     </SnapAnimationProvider>
   );

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useSwiperSlide } from 'swiper/react';
+import { useIsMobile } from '../../hooks/useMediaQuery';
 
 const SnapContext = createContext(false);
 
@@ -91,27 +92,31 @@ export function Typewriter({ text, className = '', speed = 28 }) {
   const { isActive } = useSwiperSlide();
   const ready = useSnapReady(isActive);
   const reduceMotion = useReducedMotion();
-  const [len, setLen] = useState(reduceMotion ? text.length : 0);
+  const isMobile = useIsMobile();
+  const [len, setLen] = useState(reduceMotion || isMobile ? text.length : 0);
 
   useEffect(() => {
-    if (!ready || reduceMotion) {
+    if (!ready || reduceMotion || isMobile) {
       setLen(text.length);
       return undefined;
     }
     setLen(0);
     let i = 0;
+    const tick = speed < 20 ? speed : Math.max(speed, 36);
     const id = setInterval(() => {
       i += 1;
       setLen(i);
       if (i >= text.length) clearInterval(id);
-    }, speed);
+    }, tick);
     return () => clearInterval(id);
-  }, [ready, text, speed, reduceMotion]);
+  }, [ready, text, speed, reduceMotion, isMobile]);
+
+  const showCursor = len < text.length && ready && !reduceMotion && !isMobile;
 
   return (
     <p className={className}>
       {text.slice(0, len)}
-      {len < text.length && (
+      {showCursor && (
         <span className="ml-0.5 inline-block h-4 w-0.5 animate-pulse bg-teal-glow align-middle" />
       )}
     </p>

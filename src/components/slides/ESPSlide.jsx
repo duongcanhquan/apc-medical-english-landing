@@ -1,8 +1,6 @@
 import { Layers } from 'lucide-react';
+import { slideImages } from '../../lib/slideImages';
 import CourseDetailLayout from './CourseDetailLayout';
-
-const BG =
-  'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=1920&q=80';
 
 const items = [
   {
@@ -21,9 +19,9 @@ const items = [
     desc: 'Học tại bệnh viện, tại APC, hoặc kết hợp linh hoạt.',
   },
   {
-    label: 'Cam kết',
+    label: 'Chứng nhận',
     highlight: 'KPI ràng buộc',
-    desc: 'Đo lường KPI theo hợp đồng — kết quả minh bạch cho Ban Giám Đốc.',
+    desc: 'Báo cáo năng lực theo hợp đồng — kết quả minh bạch cho Ban Giám Đốc.',
   },
   {
     label: 'Lợi ích',
@@ -35,8 +33,8 @@ const items = [
 export default function ESPSlide() {
   return (
     <CourseDetailLayout
-      bg={BG}
-      alt="Chuyên khoa ESP"
+      bg={slideImages.esp.src}
+      alt={slideImages.esp.alt}
       overlay="neural"
       fx="brain-waves"
       badge="Precision Medicine"
@@ -45,6 +43,11 @@ export default function ESPSlide() {
       tagline="ESP · Bước 3"
       title="Chuyên Khoa ESP"
       headlineAccent="violet"
+      certHero={{
+        title: 'Chứng nhận chương trình',
+        cert: 'ESP May Đo',
+        subtitle: 'Theo chuyên khoa & KPI bệnh viện',
+      }}
       items={items}
     />
   );

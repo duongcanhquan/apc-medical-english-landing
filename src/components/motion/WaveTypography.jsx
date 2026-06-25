@@ -1,12 +1,20 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { useFxMotion } from '../../hooks/useSlideActive';
+
+const KEYWORD = {
+  teal: 'keyword-teal',
+  sky: 'keyword-sky',
+  violet: 'keyword-violet',
+  gold: 'keyword-gold',
+};
 
 export function WaveHeadline({ children, className = '', accent = 'teal' }) {
-  const reduceMotion = useReducedMotion();
+  const { run } = useFxMotion();
   const stroke = accent === 'sky' ? '#38bdf8' : accent === 'violet' ? '#a78bfa' : '#2dd4bf';
 
   return (
     <div className={`relative inline-block ${className}`}>
-      <h2 className="font-serif text-balance text-3xl font-bold text-white md:text-5xl lg:text-6xl">
+      <h2 className="headline-display text-balance text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
         {children}
       </h2>
       <svg
@@ -15,24 +23,13 @@ export function WaveHeadline({ children, className = '', accent = 'teal' }) {
         preserveAspectRatio="none"
         aria-hidden="true"
       >
-        <motion.path
+        <path
           d="M0 8 Q50 2 100 8 T200 8 T300 8 T400 8"
           fill="none"
           stroke={stroke}
-          strokeWidth="2.5"
+          strokeWidth="3"
           strokeLinecap="round"
-          animate={
-            reduceMotion
-              ? {}
-              : {
-                  d: [
-                    'M0 8 Q50 2 100 8 T200 8 T300 8 T400 8',
-                    'M0 8 Q50 14 100 8 T200 8 T300 8 T400 8',
-                    'M0 8 Q50 2 100 8 T200 8 T300 8 T400 8',
-                  ],
-                }
-          }
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          className={run ? 'wave-underline' : ''}
         />
       </svg>
     </div>
@@ -40,17 +37,8 @@ export function WaveHeadline({ children, className = '', accent = 'teal' }) {
 }
 
 export function HighlightWord({ children, color = 'teal' }) {
-  const colors = {
-    teal: 'from-teal-glow via-cyan-300 to-teal-accent',
-    sky: 'from-sky-300 via-blue-300 to-sky-400',
-    violet: 'from-violet-300 via-purple-300 to-violet-400',
-    gold: 'from-gold-glow via-amber-300 to-gold-cta',
-  };
-
   return (
-    <span
-      className={`wave-highlight bg-gradient-to-r ${colors[color] || colors.teal} bg-[length:200%_auto] bg-clip-text font-bold text-transparent`}
-    >
+    <span className={`keyword ${KEYWORD[color] || KEYWORD.teal}`}>
       {children}
     </span>
   );
@@ -60,59 +48,52 @@ export function FloatingDetailItem({ label, highlight, desc, index, color = 'tea
   const reduceMotion = useReducedMotion();
   const ringColor =
     color === 'sky'
-      ? 'border-sky-400/30 shadow-sky-400/10'
+      ? 'border-sky-400/50'
       : color === 'violet'
-        ? 'border-violet-400/30 shadow-violet-400/10'
-        : 'border-teal-glow/30 shadow-teal-glow/10';
+        ? 'border-violet-400/50'
+        : 'border-teal-glow/50';
 
   const offset = index % 2 === 0 ? 'md:ml-0 md:mr-auto' : 'md:ml-auto md:mr-0';
   const rotate = index % 2 === 0 ? -0.6 : 0.6;
 
   return (
     <motion.div
-      className={`relative max-w-xl ${offset} ${index % 2 === 0 ? 'self-start' : 'self-end md:text-right'}`}
+      className={`hover-lift relative w-full max-w-xl md:max-w-xl ${offset} ${index % 2 === 0 ? 'md:self-start' : 'md:self-end md:text-right'}`}
       initial={{ opacity: 0, y: 24, rotate: 0 }}
       animate={{ opacity: 1, y: 0, rotate: reduceMotion ? 0 : rotate }}
       transition={{ duration: 0.55, delay: index * 0.07 }}
-      whileHover={reduceMotion ? {} : { scale: 1.02, rotate: 0 }}
     >
       <div
-        className={`relative border-l-2 bg-gradient-to-r from-white/[0.06] to-transparent py-3 pl-4 md:py-4 md:pl-5 ${ringColor} ${index % 2 === 1 ? 'md:border-l-0 md:border-r-2 md:pr-5 md:pl-0' : ''}`}
-        style={{
-          borderImage: 'none',
-          borderColor:
-            color === 'sky' ? 'rgba(56,189,248,0.5)' : color === 'violet' ? 'rgba(167,139,250,0.5)' : 'rgba(45,212,191,0.5)',
-        }}
+        className={`glass-panel relative rounded-xl border-l-4 py-3 pl-4 md:py-4 md:pl-5 ${ringColor} ${index % 2 === 1 ? 'md:border-l-0 md:border-r-4 md:pr-5 md:pl-0' : ''}`}
       >
-        <p className="mb-1 font-mono text-[10px] tracking-[0.2em] text-slate-500 uppercase md:text-xs">
+        <p className={`hook-label mb-1.5 text-[10px] md:text-xs ${color === 'sky' ? 'hook-label-sky' : color === 'violet' ? 'hook-label-violet' : 'hook-label-teal'}`}>
           {label}
         </p>
         {highlight && (
-          <p className="mb-1 text-lg font-extrabold md:text-2xl">
+          <p className="mb-1.5 text-base font-extrabold sm:text-lg md:text-2xl">
             <HighlightWord color={color}>{highlight}</HighlightWord>
           </p>
         )}
-        <p className="text-sm leading-relaxed text-slate-300 md:text-base">{desc}</p>
+        <p className="text-body text-sm leading-relaxed md:text-base">{desc}</p>
       </div>
     </motion.div>
   );
 }
 
 export function WaveBadge({ children, color = 'teal' }) {
+  const { run } = useFxMotion();
   const bg =
     color === 'sky'
-      ? 'bg-sky-500/15 text-sky-300 ring-sky-400/40'
+      ? 'bg-sky-950/90 text-sky-200 ring-sky-400/50'
       : color === 'violet'
-        ? 'bg-violet-500/15 text-violet-300 ring-violet-400/40'
-        : 'bg-teal-accent/15 text-teal-glow ring-teal-glow/40';
+        ? 'bg-violet-950/90 text-violet-200 ring-violet-400/50'
+        : 'bg-teal-950/90 text-teal-100 ring-teal-glow/50';
 
   return (
-    <motion.span
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ring-1 ${bg} md:text-sm`}
-      animate={{ y: [0, -3, 0] }}
-      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-extrabold ring-1 ${bg} md:text-sm ${run ? 'badge-float' : ''}`}
     >
       {children}
-    </motion.span>
+    </span>
   );
 }
