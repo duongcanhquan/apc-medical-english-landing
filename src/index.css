@@ -1,0 +1,153 @@
+@import 'tailwindcss';
+@import 'swiper/css';
+@import 'swiper/css/pagination';
+
+@theme {
+  --font-sans: 'Be Vietnam Pro', system-ui, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --color-medical-950: #020617;
+  --color-medical-900: #0a1628;
+  --color-teal-accent: #14b8a6;
+  --color-teal-glow: #2dd4bf;
+  --color-gold-cta: #f59e0b;
+  --color-gold-glow: #fbbf24;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+html.admin-route,
+html.admin-route body,
+html.admin-route #root {
+  height: auto;
+  min-height: 100%;
+  overflow: auto;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-medical-950);
+  color: #f8fafc;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(48px);
+  -webkit-backdrop-filter: blur(48px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 25px 60px -15px rgba(20, 184, 166, 0.12);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.gradient-headline {
+  background: linear-gradient(135deg, #fff 0%, #2dd4bf 50%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.stat-glow {
+  text-shadow: 0 0 24px rgba(45, 212, 191, 0.55);
+}
+
+.swiper,
+.swiper-slide {
+  height: 100%;
+}
+
+.swiper-slide {
+  overflow: hidden;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(45, 212, 191, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 36px rgba(45, 212, 191, 0.5);
+  }
+}
+
+.pill-glow {
+  animation: pulse-glow 3.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat-btn {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 24px rgba(245, 158, 11, 0.45);
+  }
+  14% {
+    transform: scale(1.04);
+    box-shadow: 0 0 40px rgba(245, 158, 11, 0.7);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.03);
+  }
+}
+
+.heartbeat-cta {
+  animation: heartbeat-btn 2.2s ease-in-out infinite;
+}
+
+@keyframes mri-sweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+.mri-sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(45, 212, 191, 0.12) 50%,
+    transparent 60%
+  );
+  animation: mri-sweep 2.8s ease-in-out forwards;
+  pointer-events: none;
+}
+
+.nav-dot-active {
+  box-shadow: 0 0 12px rgba(45, 212, 191, 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill-glow,
+  .heartbeat-cta {
+    animation: none;
+  }
+  .mri-sweep::after {
+    animation: none;
+    display: none;
+  }
+}
