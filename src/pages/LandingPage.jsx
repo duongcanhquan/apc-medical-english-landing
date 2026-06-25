@@ -44,7 +44,7 @@ export default function LandingPage() {
         keyboard={{ enabled: true }}
         speed={900}
         modules={[Mousewheel, Keyboard]}
-        className="h-screen w-full"
+        className="h-[100dvh] w-full"
         slidesPerView={1}
         onSwiper={setSwiper}
         onSlideChange={(s) => setActiveIndex(s.activeIndex)}

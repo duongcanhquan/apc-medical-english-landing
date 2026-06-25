@@ -53,7 +53,7 @@ export default function CTASlide() {
             </SlideEntrance>
 
             <SlideEntrance delay={0.35}>
-              <div className="flex flex-col items-center gap-3 text-xs text-slate-400 md:flex-row md:flex-wrap md:gap-6 md:text-sm lg:justify-start">
+              <div className="mobile-footer-links flex flex-col items-center gap-3 pb-1 text-xs text-slate-400 md:flex-row md:flex-wrap md:gap-6 md:text-sm lg:justify-start">
                 <a href="tel:02473051212" className="flex items-center gap-2 hover:text-teal-glow">
                   <Phone className="h-4 w-4" /> 0247 305 1212
                 </a>

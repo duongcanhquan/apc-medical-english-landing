@@ -23,6 +23,8 @@ export default function SlideContent({
         .join(' ')}
     >
       {children}
+      {/* Mobile: đảm bảo nội dung cuối không bị pill che */}
+      <div className="slide-end-spacer shrink-0 lg:hidden" aria-hidden="true" />
     </div>
   );
 }

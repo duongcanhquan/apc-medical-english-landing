@@ -13,10 +13,18 @@
   --color-gold-glow: #fbbf24;
 }
 
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --pill-height: 3.75rem;
+  --slide-bottom-mobile: calc(var(--safe-bottom) + var(--pill-height) + 1.5rem);
+}
+
 html,
 body,
 #root {
   height: 100%;
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -162,6 +170,7 @@ body {
 .swiper,
 .swiper-slide {
   height: 100%;
+  height: 100dvh;
 }
 
 .swiper-slide {
@@ -230,15 +239,32 @@ body {
 }
 
 .slide-scroll {
-  padding-top: max(3.25rem, env(safe-area-inset-top, 0px));
-  padding-bottom: max(6.5rem, calc(env(safe-area-inset-bottom, 0px) + 5rem));
-  contain: layout style;
+  padding-top: max(3.25rem, var(--safe-top));
+  padding-bottom: max(var(--slide-bottom-mobile), 9rem);
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 768px) {
   .slide-scroll {
-    padding-top: max(4rem, env(safe-area-inset-top, 0px));
-    padding-bottom: max(7rem, calc(env(safe-area-inset-bottom, 0px) + 5.5rem));
+    padding-top: max(4rem, var(--safe-top));
+    padding-bottom: max(7rem, calc(var(--safe-bottom) + 5.5rem));
+    contain: layout style;
+  }
+}
+
+/* Mobile: course slides scroll freely with extra clearance above pill */
+@media (max-width: 1023px) {
+  .slide-scroll-fit {
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+
+  .course-detail-content {
+    padding-bottom: 0.25rem;
+  }
+
+  .course-detail-grid {
+    padding-bottom: 0.5rem;
   }
 }
 
@@ -247,8 +273,8 @@ body {
   .slide-scroll-fit {
     overflow: hidden;
     justify-content: center;
-    padding-top: max(3.25rem, env(safe-area-inset-top, 0px));
-    padding-bottom: max(5.75rem, calc(env(safe-area-inset-bottom, 0px) + 4.25rem));
+    padding-top: max(3.25rem, var(--safe-top));
+    padding-bottom: max(5.75rem, calc(var(--safe-bottom) + 4.25rem));
   }
 
   .course-detail-content {
@@ -259,6 +285,17 @@ body {
 
   .course-detail-grid {
     margin-top: 0.25rem;
+  }
+}
+
+.slide-end-spacer {
+  height: calc(var(--pill-height) * 0.35);
+  min-height: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .slide-end-spacer {
+    display: none;
   }
 }
 
