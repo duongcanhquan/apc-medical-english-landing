@@ -72,7 +72,7 @@ export default function WhyAPCSlide() {
             </svg>
 
             <motion.div
-              className="glass-strong absolute top-1/2 left-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full px-4 py-3 md:px-5 md:py-4"
+              className="glass-strong absolute top-1/2 left-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl px-5 py-4 md:px-8 md:py-5"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}

@@ -1,43 +1,111 @@
-import { motion, useReducedMotion } from 'framer-motion';
+import { useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 const NAV_ITEMS = [
-  { label: '1. Tổng quan' },
-  { label: '2. Thực trạng' },
-  { label: '3. Foundation' },
-  { label: '4. OET' },
-  { label: '5. ESP' },
-  { label: '6. Tại sao chọn APC' },
-  { label: '7. Lộ trình' },
-  { label: '8. Khảo sát' },
+  { label: 'Tổng quan', short: '01' },
+  { label: 'Thực trạng', short: '02' },
+  { label: 'Giải pháp', short: '03' },
+  { label: 'Foundation', short: '04' },
+  { label: 'OET', short: '05' },
+  { label: 'ESP', short: '06' },
+  { label: 'Tại sao APC', short: '07' },
+  { label: 'Lộ trình', short: '08' },
+  { label: 'Khảo sát', short: '09' },
 ];
 
+function MacTooltip({ label, visible }) {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          className="pointer-events-none absolute right-9 bottom-full mb-2 flex flex-col items-end"
+          initial={{ opacity: 0, y: 8, scale: 0.92, filter: 'blur(6px)' }}
+          animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, y: 6, scale: 0.95, filter: 'blur(4px)' }}
+          transition={{ type: 'spring', stiffness: 420, damping: 28 }}
+        >
+          <div className="dock-tooltip rounded-xl px-3.5 py-2 text-right shadow-xl">
+            <motion.p
+              className="text-sm font-semibold tracking-tight text-white"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: {},
+                visible: { transition: { staggerChildren: reduceMotion ? 0 : 0.018 } },
+              }}
+            >
+              {label.split('').map((char, i) => (
+                <motion.span
+                  key={`${label}-${i}`}
+                  className="inline-block"
+                  variants={{
+                    hidden: { opacity: 0, y: 6 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </motion.span>
+              ))}
+            </motion.p>
+          </div>
+          <div className="mr-3 h-2 w-2 rotate-45 bg-white/10 backdrop-blur-xl" />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export default function FloatingNav({ activeIndex, onNavigate }) {
+  const [hovered, setHovered] = useState(null);
+  const reduceMotion = useReducedMotion();
+
+  const getScale = (index) => {
+    if (hovered === null) return activeIndex === index ? 1.2 : 1;
+    const dist = Math.abs(hovered - index);
+    if (dist === 0) return 1.55;
+    if (dist === 1) return 1.18;
+    if (dist === 2) return 1.06;
+    return 1;
+  };
+
   return (
     <nav
-      className="fixed right-4 top-1/2 z-50 hidden -translate-y-1/2 flex-col gap-3 md:flex"
+      className="fixed right-3 top-1/2 z-50 hidden -translate-y-1/2 flex-col items-end gap-2 md:flex md:right-5 md:gap-2.5"
       aria-label="Điều hướng slide"
+      onMouseLeave={() => setHovered(null)}
     >
-      {NAV_ITEMS.map((item, index) => (
-        <button
-          key={item.label}
-          type="button"
-          onClick={() => onNavigate(index)}
-          className="group relative flex items-center justify-end"
-          aria-label={item.label}
-          aria-current={activeIndex === index ? 'true' : undefined}
-        >
-          <span className="pointer-events-none absolute right-8 rounded-lg bg-black/70 px-3 py-1.5 text-xs font-medium whitespace-nowrap text-teal-glow opacity-0 backdrop-blur-md transition-opacity group-hover:opacity-100">
-            {item.label}
-          </span>
-          <span
-            className={`block h-2.5 w-2.5 rounded-full border border-teal-accent/50 transition-all ${
-              activeIndex === index
-                ? 'nav-dot-active scale-125 bg-teal-glow'
-                : 'bg-white/20 group-hover:bg-teal-accent/60'
-            }`}
-          />
-        </button>
-      ))}
+      {NAV_ITEMS.map((item, index) => {
+        const isActive = activeIndex === index;
+        const isHovered = hovered === index;
+        const scale = reduceMotion ? (isActive ? 1.15 : 1) : getScale(index);
+
+        return (
+          <button
+            key={item.label}
+            type="button"
+            onClick={() => onNavigate(index)}
+            onMouseEnter={() => setHovered(index)}
+            className="group relative flex items-center justify-end outline-none"
+            aria-label={item.label}
+            aria-current={isActive ? 'true' : undefined}
+          >
+            <MacTooltip label={item.label} visible={isHovered} />
+            <motion.span
+              className={`relative block rounded-full border transition-colors ${
+                isActive
+                  ? 'border-teal-glow bg-teal-glow shadow-[0_0_14px_rgba(45,212,191,0.7)]'
+                  : 'border-teal-accent/40 bg-white/15 group-hover:border-teal-glow/60 group-hover:bg-teal-accent/30'
+              }`}
+              animate={{ width: 10 * scale, height: 10 * scale }}
+              transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+              style={{ width: 10, height: 10 }}
+            />
+          </button>
+        );
+      })}
     </nav>
   );
 }

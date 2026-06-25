@@ -141,6 +141,35 @@ body {
   box-shadow: 0 0 12px rgba(45, 212, 191, 0.8);
 }
 
+.dock-tooltip {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+@keyframes wave-shimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.wave-highlight {
+  animation: wave-shimmer 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-highlight {
+    animation: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pill-glow,
   .heartbeat-cta {

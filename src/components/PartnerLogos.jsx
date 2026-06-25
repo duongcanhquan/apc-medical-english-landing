@@ -2,22 +2,22 @@ import { motion } from 'framer-motion';
 
 const SIZES = {
   sm: {
-    vietmy: 'h-7 max-w-[120px] md:h-8 md:max-w-[140px]',
-    equest: 'h-5 max-w-[100px] md:h-6 md:max-w-[120px]',
-    divider: 'text-base md:text-lg',
-    gap: 'gap-2 md:gap-3',
-  },
-  md: {
-    vietmy: 'h-12 max-w-[180px] md:h-14 md:max-w-[200px]',
-    equest: 'h-9 max-w-[150px] md:h-11 md:max-w-[170px]',
-    divider: 'text-lg md:text-xl',
+    vietmy: 'h-14 max-w-[240px] md:h-16 md:max-w-[280px]',
+    equest: 'h-10 max-w-[200px] md:h-12 md:max-w-[240px]',
+    divider: 'text-xl md:text-2xl',
     gap: 'gap-3 md:gap-4',
   },
+  md: {
+    vietmy: 'h-24 max-w-[360px] md:h-28 md:max-w-[400px]',
+    equest: 'h-20 max-w-[300px] md:h-24 md:max-w-[340px]',
+    divider: 'text-2xl md:text-3xl',
+    gap: 'gap-4 md:gap-6',
+  },
   lg: {
-    vietmy: 'h-14 max-w-[200px] md:h-16 md:max-w-[220px]',
-    equest: 'h-10 max-w-[160px] md:h-12 md:max-w-[180px]',
-    divider: 'text-xl md:text-2xl',
-    gap: 'gap-3 md:gap-5',
+    vietmy: 'h-28 max-w-[400px] md:h-32 md:max-w-[440px]',
+    equest: 'h-20 max-w-[320px] md:h-24 md:max-w-[360px]',
+    divider: 'text-2xl md:text-4xl',
+    gap: 'gap-4 md:gap-6',
   },
 };
 

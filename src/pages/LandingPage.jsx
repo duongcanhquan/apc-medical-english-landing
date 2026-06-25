@@ -5,6 +5,7 @@ import FloatingNav, { AmbientLayer } from '../components/motion/FloatingNav';
 import MotivationalPill from '../components/motion/MotivationalPill';
 import HeroSlide from '../components/slides/HeroSlide';
 import DiagnosisSlide from '../components/slides/DiagnosisSlide';
+import SolutionsSlide from '../components/slides/SolutionsSlide';
 import FoundationSlide from '../components/slides/FoundationSlide';
 import OETSlide from '../components/slides/OETSlide';
 import ESPSlide from '../components/slides/ESPSlide';
@@ -15,6 +16,7 @@ import CTASlide from '../components/slides/CTASlide';
 const SLIDES = [
   HeroSlide,
   DiagnosisSlide,
+  SolutionsSlide,
   FoundationSlide,
   OETSlide,
   ESPSlide,

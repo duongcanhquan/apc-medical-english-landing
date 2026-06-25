@@ -7,3 +7,4 @@ server/data/registrations.json
 .env
 .env.*
 !.env.example
+.vercel
